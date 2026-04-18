@@ -10,6 +10,7 @@ public class MixamoClimber : MonoBehaviour
     [Header("Impostazioni Movimento")]
     public float handSpeed = 30f;
     public float zDepth = 0f;
+    public float maxArmLength = 1.5f;
 
     void FixedUpdate()
     {
@@ -46,7 +47,17 @@ public class MixamoClimber : MonoBehaviour
     // Funzione che spinge fisicamente la mano verso il bersaglio
     void MoveHandTowards(Rigidbody rb, Vector3 target)
     {
-        Vector3 direction = target - rb.position;
+        // Calcola la distanza tra il corpo e il mouse
+        Vector3 offsetDalCorpo = target - rbBody.position;
+
+        // Il trucco magico: impedisce all'offset di essere più lungo del braccio!
+        Vector3 offsetLimitato = Vector3.ClampMagnitude(offsetDalCorpo, maxArmLength);
+
+        // Il punto reale dove la mano deve fermarsi
+        Vector3 destinazioneReale = rbBody.position + offsetLimitato;
+
+        // Muovi la mano verso la destinazione reale
+        Vector3 direction = destinazioneReale - rb.position;
         rb.linearVelocity = direction * handSpeed;
     }
 }
