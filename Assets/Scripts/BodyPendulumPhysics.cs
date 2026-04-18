@@ -1,32 +1,19 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody))]
 public class BodyPendulumPhysics : MonoBehaviour
 {
-    private Rigidbody2D rb;
+    private Rigidbody rb;
     public HandGrabber leftHand;
     public HandGrabber rightHand;
+    public float fallDrag = 0.1f;
+    public float swingDrag = 3f;
 
-    [Header("Fisica Personalizzata")]
-    public float fallDrag = 0f; // Resistenza dell'aria in caduta libera
-    public float swingDrag = 2f; // Resistenza dell'aria mentre si dondola (evita rotazioni folli)
-
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-    }
+    void Awake() { rb = GetComponent<Rigidbody>(); }
 
     void FixedUpdate()
     {
-        // Se almeno una mano è attaccata, aumenta lo smorzamento per un dondolio controllato
-        if (leftHand.IsGrabbing || rightHand.IsGrabbing)
-        {
-            rb.linearDamping = swingDrag;
-        }
-        else
-        {
-            // In caduta libera, togli la resistenza per far cadere il giocatore velocemente (effetto punitivo!)
-            rb.linearDamping = fallDrag;
-        }
+        bool isGrabbing = (leftHand != null && leftHand.IsGrabbing) || (rightHand != null && rightHand.IsGrabbing);
+        rb.linearDamping = isGrabbing ? swingDrag : fallDrag;
     }
 }

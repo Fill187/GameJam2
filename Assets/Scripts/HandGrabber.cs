@@ -1,33 +1,23 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))] // Niente più 2D
+[RequireComponent(typeof(Rigidbody))]
 public class HandGrabber : MonoBehaviour
 {
     public Rigidbody rb { get; private set; }
     public bool IsGrabbing { get; private set; }
-
     private Collider currentClimbableObject;
-    private FixedJoint currentJoint; // FixedJoint in 3D è molto stabile
+    private FixedJoint currentJoint;
 
-    void Awake()
+    void Awake() { rb = GetComponent<Rigidbody>(); }
+
+    private void OnTriggerEnter(Collider other)
     {
-        rb = GetComponent<Rigidbody>();
+        if (other.CompareTag("Climbable")) currentClimbableObject = other;
     }
 
-    private void OnTriggerEnter(Collider collision)
+    private void OnTriggerExit(Collider other)
     {
-        if (collision.CompareTag("Climbable"))
-        {
-            currentClimbableObject = collision;
-        }
-    }
-
-    private void OnTriggerExit(Collider collision)
-    {
-        if (collision == currentClimbableObject)
-        {
-            currentClimbableObject = null;
-        }
+        if (other == currentClimbableObject) currentClimbableObject = null;
     }
 
     public void TryGrab()
@@ -35,15 +25,9 @@ public class HandGrabber : MonoBehaviour
         if (currentClimbableObject != null && !IsGrabbing)
         {
             IsGrabbing = true;
-            
-            // Crea il giunto 3D
             currentJoint = gameObject.AddComponent<FixedJoint>();
-            
             Rigidbody targetRb = currentClimbableObject.GetComponent<Rigidbody>();
-            if (targetRb != null)
-            {
-                currentJoint.connectedBody = targetRb;
-            }
+            if (targetRb != null) currentJoint.connectedBody = targetRb;
         }
     }
 
@@ -52,10 +36,7 @@ public class HandGrabber : MonoBehaviour
         if (IsGrabbing)
         {
             IsGrabbing = false;
-            if (currentJoint != null)
-            {
-                Destroy(currentJoint);
-            }
+            if (currentJoint != null) Destroy(currentJoint);
         }
     }
 }
