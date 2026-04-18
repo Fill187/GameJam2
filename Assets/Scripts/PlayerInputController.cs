@@ -7,30 +7,32 @@ public class PlayerInputController : MonoBehaviour
     public HandGrabber rightHand;
 
     [Header("Impostazioni")]
-    public float handMoveSpeed = 10f;
+    public float handMoveSpeed = 15f;
+    public float zDepth = 0f; // La profondità a cui si trovano l'antenna e le mani
 
     void Update()
     {
-        // Ottieni la posizione del mouse nel mondo di gioco
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // Converti la posizione del mouse in coordinate 3D bloccate su un piano Z fisso
+        Vector3 mouseScreenPos = Input.mousePosition;
+        // La distanza dalla telecamera al piano in cui si muove il personaggio
+        mouseScreenPos.z = Mathf.Abs(Camera.main.transform.position.z - zDepth); 
+        Vector3 targetPosition = Camera.main.ScreenToWorldPoint(mouseScreenPos);
 
-        // Input Mano Sinistra (Click Sinistro)
+        // Input
         if (Input.GetMouseButtonDown(0)) leftHand.TryGrab();
         if (Input.GetMouseButtonUp(0)) leftHand.Release();
 
-        // Input Mano Destra (Click Destro)
         if (Input.GetMouseButtonDown(1)) rightHand.TryGrab();
         if (Input.GetMouseButtonUp(1)) rightHand.Release();
 
-        // Muovi le mani verso il mouse se non sono attaccate
-        if (!leftHand.IsGrabbing) MoveHandTowards(leftHand, mousePosition);
-        if (!rightHand.IsGrabbing) MoveHandTowards(rightHand, mousePosition);
+        // Movimento
+        if (!leftHand.IsGrabbing) MoveHandTowards(leftHand, targetPosition);
+        if (!rightHand.IsGrabbing) MoveHandTowards(rightHand, targetPosition);
     }
 
-    private void MoveHandTowards(HandGrabber hand, Vector2 targetPos)
+    private void MoveHandTowards(HandGrabber hand, Vector3 targetPos)
     {
-        // Sposta fisicamente la mano verso il cursore
-        Vector2 newPosition = Vector2.Lerp(hand.rb.position, targetPos, handMoveSpeed * Time.deltaTime);
+        Vector3 newPosition = Vector3.Lerp(hand.rb.position, targetPos, handMoveSpeed * Time.deltaTime);
         hand.rb.MovePosition(newPosition);
     }
 }

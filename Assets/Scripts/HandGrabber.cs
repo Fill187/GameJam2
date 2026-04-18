@@ -1,21 +1,20 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody))] // Niente più 2D
 public class HandGrabber : MonoBehaviour
 {
-    public Rigidbody2D rb { get; private set; }
+    public Rigidbody rb { get; private set; }
     public bool IsGrabbing { get; private set; }
 
-    private Collider2D currentClimbableObject;
-    private HingeJoint2D currentJoint;
+    private Collider currentClimbableObject;
+    private FixedJoint currentJoint; // FixedJoint in 3D è molto stabile
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
     }
 
-    // Rileva se la mano sta toccando qualcosa di scalabile (usa un Tag "Climbable")
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if (collision.CompareTag("Climbable"))
         {
@@ -23,7 +22,7 @@ public class HandGrabber : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit(Collider collision)
     {
         if (collision == currentClimbableObject)
         {
@@ -37,11 +36,10 @@ public class HandGrabber : MonoBehaviour
         {
             IsGrabbing = true;
             
-            // Crea un giunto per far dondolare il corpo attorno a questo punto
-            currentJoint = gameObject.AddComponent<HingeJoint2D>();
+            // Crea il giunto 3D
+            currentJoint = gameObject.AddComponent<FixedJoint>();
             
-            // Collega la mano all'oggetto scalabile (se ha un rigidbody), altrimenti la fissa nello spazio
-            Rigidbody2D targetRb = currentClimbableObject.GetComponent<Rigidbody2D>();
+            Rigidbody targetRb = currentClimbableObject.GetComponent<Rigidbody>();
             if (targetRb != null)
             {
                 currentJoint.connectedBody = targetRb;
