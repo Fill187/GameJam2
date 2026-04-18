@@ -4,5 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Antenna.unity
+    guid: c4aeb681948c3a645af80a4c006db341
+  - enabled: 1
+    path: Assets/Scenes/comandi.unity
+    guid: 77908be113e34934aba9039428f30f2e
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
