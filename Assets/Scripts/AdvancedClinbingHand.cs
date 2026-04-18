@@ -7,6 +7,9 @@ public class AdvancedClimbingHand : MonoBehaviour
     public Camera mainCamera;
     public string climbableTag = "Climbable";
 
+    [Tooltip("Inserisci qui il piano su cui vuoi far scorrere il cursore")]
+    public Transform mousePlane;
+
     [Header("Parametri Fisici")]
     public float maxArmLength = 0.8f;
     public float moveSpeed = 60f;
@@ -23,6 +26,10 @@ public class AdvancedClimbingHand : MonoBehaviour
 
     void Start()
     {
+        if(mousePlane == null)
+        {
+            mousePlane = Object.FindFirstObjectByType<MousePlane>().transform;
+        }
         rb = GetComponent<Rigidbody>();
 
         // Forziamo il Rigidbody a non essere cinematico via codice per sicurezza
@@ -46,15 +53,16 @@ public class AdvancedClimbingHand : MonoBehaviour
             if (isTouchingClimbable) Grab();
         }
 
-        // 2. CALCOLO POSIZIONE (Il trucco del Piano Matematico)
-        if (isFollowingMouse)
+        // 2. CALCOLO POSIZIONE BASATO SUL TUO MOUSEPLANE
+        if (isFollowingMouse && mousePlane != null)
         {
-            // Creiamo un "muro invisibile" all'altezza della spalla che guarda la telecamera
-            Plane plane = new Plane(-mainCamera.transform.forward, shoulder.position);
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-            // Troviamo il punto esatto di intersezione tra il mouse e questo piano
-            if (plane.Raycast(ray, out float distance))
+            // Creiamo un piano matematico usando ESATTAMENTE la posizione e l'inclinazione del tuo mousePlane.
+            // Usiamo -mousePlane.forward assumendo che la "faccia" del piano guardi verso la telecamera.
+            Plane customPlane = new Plane(-mousePlane.forward, mousePlane.position);
+
+            if (customPlane.Raycast(ray, out float distance))
             {
                 Vector3 worldMousePos = ray.GetPoint(distance);
 
@@ -62,26 +70,38 @@ public class AdvancedClimbingHand : MonoBehaviour
                 Vector3 directionFromShoulder = worldMousePos - shoulder.position;
                 if (directionFromShoulder.magnitude > maxArmLength)
                 {
-                    directionFromShoulder = directionFromShoulder.normalized * maxArmLength;
+                    targetPosition = shoulder.position + (directionFromShoulder.normalized * maxArmLength);
                 }
-
-                targetPosition = shoulder.position + directionFromShoulder;
+                else
+                {
+                    targetPosition = worldMousePos;
+                }
             }
         }
     }
 
     void FixedUpdate()
     {
-        // 3. MENTRE TENGO PREMUTO: La mano ricalca la posizione del cursore
-        if (Input.GetMouseButton(mouseButton) && grabJoint == null)
+        // 3. MOVIMENTO FISICO
+        if (isFollowingMouse && grabJoint == null)
         {
-            MoveHandToCursor();
+            Vector3 moveDirection = targetPosition - rb.position;
+
+            if (moveDirection.magnitude < 0.05f)
+            {
+                rb.linearVelocity = Vector3.zero; // Ferma i tremolii
+            }
+            else
+            {
+                rb.linearVelocity = moveDirection * moveSpeed;
+            }
         }
     }
 
     // --- Collisioni ---
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("other: "+ other.gameObject.name);
         if (other.CompareTag(climbableTag))
         {
             isTouchingClimbable = true;
@@ -116,7 +136,7 @@ public class AdvancedClimbingHand : MonoBehaviour
         }
     }
 
-    // --- DEBUG VISIVO (Appare solo nella vista Scene di Unity) ---
+    // --- DEBUG VISIVO ---
     void OnDrawGizmos()
     {
         if (Application.isPlaying && isFollowingMouse)
@@ -124,36 +144,6 @@ public class AdvancedClimbingHand : MonoBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(targetPosition, 0.1f);
             Gizmos.DrawLine(shoulder.position, targetPosition);
-        }
-    }
-
-    private void MoveHandToCursor()
-    {
-        float zDistance = Vector3.Distance(mainCamera.transform.position, shoulder.position);
-        Vector3 mouseScreenPos = Input.mousePosition;
-        mouseScreenPos.z = zDistance;
-
-        Vector3 targetPosition = mainCamera.ScreenToWorldPoint(mouseScreenPos);
-
-        // Limite di estensione del braccio
-        Vector3 directionFromShoulder = targetPosition - shoulder.position;
-        if (directionFromShoulder.magnitude > maxArmLength)
-        {
-            // Blocca il target al limite esatto del braccio
-            targetPosition = shoulder.position + (directionFromShoulder.normalized * maxArmLength);
-        }
-
-        Vector3 moveDirection = targetPosition - rb.position;
-
-        // NUOVO: Se la mano � arrivata a destinazione o � al limite, smettiamo di tirarla
-        if (moveDirection.magnitude < 0.05f)
-        {
-            rb.linearVelocity = Vector3.zero;
-        }
-        else
-        {
-            // La mano si muove verso il target.
-            rb.linearVelocity = moveDirection * moveSpeed;
         }
     }
 }
