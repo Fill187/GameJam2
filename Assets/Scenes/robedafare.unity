@@ -1881,7 +1881,7 @@ GameObject:
   - component: {fileID: 1857800192}
   - component: {fileID: 1857800191}
   - component: {fileID: 1857800190}
-  - component: {fileID: 1857800189}
+  - component: {fileID: 1857800194}
   m_Layer: 0
   m_Name: Cylinder (2)
   m_TagString: Untagged
@@ -1889,19 +1889,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1857800189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1857800188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5678c563f38744cb417fee701a9c8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Verde: {fileID: 2100000, guid: 39067f2f1825aa343b85733a1f39a615, type: 2}
 --- !u!136 &1857800190
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1993,6 +1980,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1857800194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857800188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 213a7e9ef25b7c7478da79d99b4a8ef7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Verde: {fileID: 2100000, guid: 39067f2f1825aa343b85733a1f39a615, type: 2}
 --- !u!1 &1878072327
 GameObject:
   m_ObjectHideFlags: 0
