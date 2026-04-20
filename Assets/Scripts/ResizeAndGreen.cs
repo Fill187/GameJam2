@@ -8,7 +8,7 @@ public class ResizeAndGreen : MonoBehaviour
     void OnMouseDown()
     {
         // 1. Set the exact scale: X=0.2, Y=0.5, Z=0.2
-        transform.localScale = new Vector3(0.2f, 0.5f, 0.2f);
+        transform.localScale = new Vector3(1f, 1f, 1f);
 
         // 2. Swap the material to your green material
         Renderer renderer = GetComponent<Renderer>();
