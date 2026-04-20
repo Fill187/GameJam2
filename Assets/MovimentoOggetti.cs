@@ -20,6 +20,8 @@ public class MovimentoOggetti : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
             SceneManager.LoadScene("GameOver");
         }
     }

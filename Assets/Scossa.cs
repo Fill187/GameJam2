@@ -9,6 +9,8 @@ public class Scossa : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
             SceneManager.LoadScene("GameOver");
         }
     }
