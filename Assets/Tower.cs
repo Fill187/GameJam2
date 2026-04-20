@@ -7,6 +7,6 @@ public class Tower : MonoBehaviour
     
     public float GetTop()
     {
-        return top.position.y;
+        return top.position.z;
     }
 }

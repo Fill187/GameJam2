@@ -41,11 +41,11 @@ public class TowerGenerator : MonoBehaviour
             // Calcoliamo l'altezza del pezzo precedente per impilare correttamente
             // Nota: Questo assume che il pivot del prefab sia alla base.
             float offset = _lastPiece.GetComponent<Tower>().GetTop();
-            nextPosition = new Vector3(spawnPoint.position.x, spawnPoint.position.y + offset, spawnPoint.position.z);
+            nextPosition = new Vector3(spawnPoint.position.x, spawnPoint.position.y, spawnPoint.position.z + offset);
         }
 
         // 3. Istanziamo il pezzo
-        GameObject newPiece = Instantiate(prefabToSpawn, nextPosition, Quaternion.identity, transform);
+        GameObject newPiece = Instantiate(prefabToSpawn, nextPosition, Quaternion.Euler(90,0,0), transform);
 
         // 4. Aggiorniamo il riferimento per il prossimo round
         _lastPiece = newPiece;
