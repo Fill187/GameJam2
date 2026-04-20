@@ -2717,7 +2717,7 @@ GameObject:
   - component: {fileID: 1219534837}
   - component: {fileID: 1219534836}
   m_Layer: 0
-  m_Name: Cylinder (1)
+  m_Name: Cavo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3417,7 +3417,7 @@ GameObject:
   - component: {fileID: 1872016340}
   - component: {fileID: 1872016339}
   m_Layer: 0
-  m_Name: Cylinder (4)
+  m_Name: Parabola
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3530,7 +3530,7 @@ GameObject:
   - component: {fileID: 1878072329}
   - component: {fileID: 1878072328}
   m_Layer: 0
-  m_Name: Cube (3)
+  m_Name: Contatore 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
